@@ -1,5 +1,6 @@
 package com.rsl.roombooking.config;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,8 @@ public class SecurityConfig {
 
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
+						.requestMatchers(HttpMethod.GET, "/health").permitAll()
+
 						.requestMatchers("/users/login", "/users/admin-login", "/users/employee-login",
 								"/users/set-password")
 						.permitAll()
@@ -66,8 +69,10 @@ public class SecurityConfig {
 	CorsConfigurationSource corsConfigurationSource() {
 
 		CorsConfiguration configuration = new CorsConfiguration();
+		List<String> allowedOrigins = Arrays.stream(allowedOrigin.split(",")).map(String::trim)
+				.filter(origin -> !origin.isBlank()).toList();
 
-		configuration.setAllowedOrigins(List.of(allowedOrigin));
+		configuration.setAllowedOrigins(allowedOrigins);
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
