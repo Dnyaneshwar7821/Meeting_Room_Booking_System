@@ -2,11 +2,13 @@ package com.rsl.roombooking.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,9 @@ public class BookingService {
 	private final BookingRepository bookingRepo;
 
 	private static final String SYSTEM_ADMIN_EMAIL = "admin@company.com";
+
+	@Value("${app.time-zone}")
+	private String appTimeZone;
 
 	@Transactional
 	public Booking createBooking(BookingDTO dto, String authenticatedEmail) {
@@ -177,13 +182,13 @@ public class BookingService {
 	}
 
 	public List<Long> getCurrentlyOccupiedRoomIds() {
-		return bookingRepo.findCurrentlyOccupiedRoomIds(LocalDate.now(), LocalTime.now());
+		return bookingRepo.findCurrentlyOccupiedRoomIds(currentDate(), currentTime());
 	}
 
 	public List<RoomStatusDTO> getTodayRoomStatuses() {
 
-		LocalDate today = LocalDate.now();
-		LocalTime now = LocalTime.now();
+		LocalDate today = currentDate();
+		LocalTime now = currentTime();
 
 		Set<Long> inUse = new HashSet<>(bookingRepo.findCurrentlyOccupiedRoomIds(today, now));
 
@@ -209,13 +214,21 @@ public class BookingService {
 			throw new InvalidBookingException("Start time must be before end time");
 		}
 
-		if (dto.getBookingDate().isBefore(LocalDate.now())) {
+		if (dto.getBookingDate().isBefore(currentDate())) {
 			throw new InvalidBookingException("Booking date cannot be in the past");
 		}
 
-		if (dto.getBookingDate().isEqual(LocalDate.now()) && !dto.getStartTime().isAfter(LocalTime.now())) {
+		if (dto.getBookingDate().isEqual(currentDate()) && !dto.getStartTime().isAfter(currentTime())) {
 
 			throw new InvalidBookingException("Cannot book a time slot that has already started");
 		}
+	}
+
+	private LocalDate currentDate() {
+		return LocalDate.now(ZoneId.of(appTimeZone));
+	}
+
+	private LocalTime currentTime() {
+		return LocalTime.now(ZoneId.of(appTimeZone));
 	}
 }
