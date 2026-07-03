@@ -22,6 +22,23 @@ body { margin: 0; min-width: 320px; }
 .portal-table tbody tr:hover { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); transform: scale(1.01); }
 .portal-table tbody tr:nth-child(even) { background: #fafbfc; }
 .portal-table tbody tr:nth-child(even):hover { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+.portal-table tbody tr.room-row-in-use,
+.portal-table tbody tr.room-row-in-use:nth-child(even),
+.portal-table tbody tr.room-row-in-use:hover,
+.portal-table tbody tr.room-row-in-use:nth-child(even):hover {
+  background: #fee2e2;
+  filter: blur(1.1px) grayscale(.35);
+  opacity: .62;
+  transform: none;
+}
+.portal-table tbody tr.room-row-reserved,
+.portal-table tbody tr.room-row-reserved:nth-child(even),
+.portal-table tbody tr.room-row-reserved:hover,
+.portal-table tbody tr.room-row-reserved:nth-child(even):hover {
+  background: #fef3c7;
+  opacity: .78;
+  transform: none;
+}
 
 /* Premium Toast Notifications */
 .toast-container {

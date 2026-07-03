@@ -28,10 +28,10 @@ export function getStatusLabel(status) {
 
 export function getRowClassName(status) {
   if (status === ROOM_STATUS.IN_USE) {
-    return "bg-red-50/80 opacity-65 blur-[0.5px]";
+    return "room-row-in-use";
   }
   if (status === ROOM_STATUS.RESERVED) {
-    return "bg-amber-50/60 opacity-90";
+    return "room-row-reserved";
   }
   return "";
 }
