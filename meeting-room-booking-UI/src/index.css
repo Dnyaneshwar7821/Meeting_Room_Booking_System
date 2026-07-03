@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
+body { margin: 0; min-width: 320px; }
+.portal-page { min-height: calc(100vh - 76px); padding: 2rem 1rem; background: radial-gradient(circle at 0 0, rgba(59,130,246,.08), transparent 30rem), #f8fafc; }
+@media (min-width: 640px) { .portal-page { padding: 2.25rem 1.25rem; } }
+.portal-container { width: 100%; max-width: 80rem; margin: 0 auto; }
+.portal-heading { margin-bottom: 1.5rem; }
+@media (min-width: 640px) { .portal-heading { margin-bottom: 2rem; } }
+.portal-kicker { margin-bottom: .35rem; color: #2563eb; font-size: .7rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+@media (min-width: 640px) { .portal-kicker { font-size: .75rem; } }
+.portal-title { color: #0f172a; font-size: clamp(1.75rem,4vw,2.75rem); font-weight: 900; letter-spacing: -.035em; }
+.portal-subtitle { margin-top: .5rem; color: #64748b; font-size: .875rem; }
+@media (min-width: 640px) { .portal-subtitle { font-size: 1rem; } }
+.portal-panel { overflow: hidden; border: 1px solid #e2e8f0; border-radius: 1.25rem; background: white; box-shadow: 0 12px 35px rgba(15,23,42,.07); }
+.portal-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+.portal-table thead { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; }
+.portal-table th { padding: 1rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.portal-table td { padding: 1rem; text-align: center; }
+.portal-table tbody tr { border-bottom: 1px solid #e2e8f0; transition: all 200ms ease; }
+.portal-table tbody tr:last-child { border-bottom: 0; }
+.portal-table tbody tr:hover { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); transform: scale(1.01); }
+.portal-table tbody tr:nth-child(even) { background: #fafbfc; }
+.portal-table tbody tr:nth-child(even):hover { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); }
+
+/* Premium Toast Notifications */
+.toast-container {
+  padding: 1rem;
+}
+
+.toast-item {
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.toast-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+}
+
+.toast-item--success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+  color: white;
+}
+
+.toast-item--error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+  color: white;
+}
+
+.toast-item--warning {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+  color: white;
+}
+
+.toast-item--info {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+  color: white;
+}
+
+.toast-body {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.toast-progress {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .portal-page {
+    padding: 1rem;
+  }
+  
+  .portal-panel {
+    border-radius: 1rem;
+  }
+  
+  .portal-table {
+    font-size: 0.875rem;
+  }
+  
+  .portal-table th,
+  .portal-table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
