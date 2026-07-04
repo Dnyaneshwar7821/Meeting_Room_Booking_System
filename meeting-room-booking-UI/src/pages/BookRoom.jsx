@@ -14,12 +14,9 @@ const BookRoom = () => {
     startTime: "",
     endTime: "",
   });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
-    setError("");
     setBooking({
       ...booking,
       [e.target.name]: e.target.value,
@@ -28,8 +25,6 @@ const BookRoom = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
 
     if (booking.startTime >= booking.endTime) {
       showError("Start time must be before end time.");

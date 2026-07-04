@@ -13,7 +13,7 @@ const Card = forwardRef(
     ref
   ) => {
     const baseStyles =
-      "rounded-3xl border transition-all duration-300 ease-in-out";
+      "rounded-2xl border transition-all duration-300 ease-in-out";
 
     const variants = {
       default:
@@ -28,7 +28,7 @@ const Card = forwardRef(
         "border-white/20 bg-white/10 backdrop-blur-xl shadow-xl shadow-black/10",
     };
 
-    const hoverStyles = hover ? "hover:shadow-xl hover:-translate-y-1" : "";
+    const hoverStyles = hover ? "hover:shadow-xl hover:-translate-y-0.5" : "";
 
     const selectedVariant = glass ? variants.glass : variants[variant];
 

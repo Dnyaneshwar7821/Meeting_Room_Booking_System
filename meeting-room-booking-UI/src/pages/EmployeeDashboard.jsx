@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PieChart,
@@ -14,7 +14,7 @@ import {
   buildStatusMap,
   getRoomStatus,
 } from "../utils/roomStatus";
-import { Card } from "../components/ui";
+import { Card, DashboardSkeleton, PanelMessage } from "../components/ui";
 
 const COLORS = ["#eab308", "#22c55e", "#ef4444"];
 const ROOM_COLORS = ["#3b82f6", "#f59e0b", "#ef4444"];
@@ -30,9 +30,13 @@ const EmployeeDashboard = () => {
   const [bookingStatusData, setBookingStatusData] = useState([]);
   const [roomStatusData, setRoomStatusData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const loadDashboard = useCallback(() => {
+    setLoading(true);
+    setLoadError("");
+
     Promise.all([
       API.get("/rooms/get-all-rooms"),
       API.get("/bookings/room-status"),
@@ -94,11 +98,17 @@ const EmployeeDashboard = () => {
           myBookings: myBookings.length,
         });
       })
-      .catch((error) =>
-        console.error("Unable to load employee dashboard", error),
-      )
+      .catch((error) => {
+        console.error("Unable to load employee dashboard", error);
+        setLoadError("Dashboard data could not be loaded. Please check your connection and try again.");
+      })
       .finally(() => setLoading(false));
   }, [user.id]);
+
+  useEffect(() => {
+    const timerId = window.setTimeout(loadDashboard, 0);
+    return () => window.clearTimeout(timerId);
+  }, [loadDashboard]);
 
   if (loading) {
     return (
@@ -112,24 +122,30 @@ const EmployeeDashboard = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {[1, 2].map((item) => (
-              <Card key={item} className="p-6 sm:p-8 animate-pulse">
-                <div className="h-5 w-32 rounded bg-slate-200" />
-                <div className="mt-3 h-4 w-44 rounded bg-slate-100" />
-                <div className="mt-6 h-12 w-20 rounded bg-slate-200" />
-              </Card>
-            ))}
+          <DashboardSkeleton metricCount={2} chartCount={2} />
+        </div>
+      </main>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <main className="portal-page">
+        <div className="portal-container">
+          <div className="portal-heading">
+            <p className="portal-kicker">Employee portal</p>
+            <h1 className="portal-title">Welcome, {user.name}</h1>
+            <p className="portal-subtitle">
+              Find a meeting room and manage your own reservations.
+            </p>
           </div>
 
-          <div className="mt-8 sm:mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {[1, 2].map((item) => (
-              <Card key={item} className="p-4 sm:p-6 shadow-lg animate-pulse">
-                <div className="mb-6 h-6 w-36 rounded bg-slate-200" />
-                <div className="mx-auto h-48 w-48 rounded-full bg-slate-100" />
-              </Card>
-            ))}
-          </div>
+          <PanelMessage
+            title="Unable to load dashboard"
+            description={loadError}
+            actionLabel="Retry"
+            onAction={loadDashboard}
+          />
         </div>
       </main>
     );

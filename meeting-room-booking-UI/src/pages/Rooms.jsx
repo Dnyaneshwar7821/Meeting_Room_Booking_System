@@ -5,7 +5,6 @@ import { getErrorMessage } from "../utils/errors";
 import {
   ROOM_STATUS,
   buildStatusMap,
-  getBadgeClassName,
   getRoomStatus,
   getRowClassName,
   getStatusLabel,

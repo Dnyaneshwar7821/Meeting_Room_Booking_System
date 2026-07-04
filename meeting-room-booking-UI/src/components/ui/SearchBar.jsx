@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 const SearchBar = forwardRef(
   ({ className = "", placeholder = "Search...", value, onChange, ...props }, ref) => {
     return (
-      <div className="relative w-full">
+      <div className={`relative w-full ${className}`}>
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
           <svg
             className="h-5 w-5"
@@ -25,7 +25,7 @@ const SearchBar = forwardRef(
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full rounded-2xl border border-slate-300 bg-white pl-12 pr-4 py-3 transition-all duration-200 ease-in-out focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 hover:border-slate-400"
+          className="w-full rounded-2xl border border-slate-300 bg-white py-3 pl-12 pr-4 transition-all duration-200 ease-in-out hover:border-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           {...props}
         />
       </div>

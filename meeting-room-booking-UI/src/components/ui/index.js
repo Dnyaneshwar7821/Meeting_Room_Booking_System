@@ -5,6 +5,8 @@ export { default as Select } from "./Select";
 export { default as Badge } from "./Badge";
 export { default as SearchBar } from "./SearchBar";
 export { default as EmptyState } from "./EmptyState";
+export { default as DashboardSkeleton } from "./DashboardSkeleton";
+export { default as PanelMessage } from "./PanelMessage";
 export { default as Table } from "./Table";
 export { default as Pagination } from "./Pagination";
 export * from "./Icons";

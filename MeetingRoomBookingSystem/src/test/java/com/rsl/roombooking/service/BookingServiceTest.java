@@ -4,18 +4,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.rsl.roombooking.DTO.BookingDTO;
 import com.rsl.roombooking.entity.MeetingRoom;
@@ -41,6 +46,11 @@ class BookingServiceTest {
 	@InjectMocks
 	private BookingService bookingService;
 
+	@BeforeEach
+	void setUp() {
+		ReflectionTestUtils.setField(bookingService, "appTimeZone", "Asia/Kolkata");
+	}
+
 	@Test
 	void createBooking_rejectsWhenStartTimeIsNotBeforeEndTime() {
 		BookingDTO dto = new BookingDTO();
@@ -63,6 +73,7 @@ class BookingServiceTest {
 
 		User user = new User();
 		user.setEmail("employee@company.com");
+		user.setRole("EMPLOYEE");
 
 		MeetingRoom room = new MeetingRoom();
 		room.setId(1L);
@@ -86,6 +97,7 @@ class BookingServiceTest {
 
 		User user = new User();
 		user.setEmail("employee@company.com");
+		user.setRole("EMPLOYEE");
 
 		MeetingRoom room = new MeetingRoom();
 		room.setId(1L);
@@ -102,6 +114,52 @@ class BookingServiceTest {
 		assertEquals(user, booking.getUser());
 		assertEquals(room, booking.getRoom());
 		verify(bookingRepo).save(any());
+	}
+
+	@Test
+	void getTodayRoomStatuses_returnsInUseBeforeReservedForSameRoom() {
+		when(bookingRepo.findCurrentlyOccupiedRoomIds(any(LocalDate.class), any(LocalTime.class)))
+				.thenReturn(List.of(1L));
+		when(bookingRepo.findReservedLaterTodayRoomIds(any(LocalDate.class), any(LocalTime.class)))
+				.thenReturn(List.of(1L, 2L));
+
+		var statuses = bookingService.getTodayRoomStatuses();
+
+		assertEquals(2, statuses.size());
+		assertEquals(1L, statuses.get(0).getRoomId());
+		assertEquals("IN_USE", statuses.get(0).getStatus());
+		assertEquals(2L, statuses.get(1).getRoomId());
+		assertEquals("RESERVED", statuses.get(1).getStatus());
+	}
+
+	@Test
+	void getTodayRoomStatuses_returnsEmptyListWhenNoApprovedBookingsApply() {
+		when(bookingRepo.findCurrentlyOccupiedRoomIds(any(LocalDate.class), any(LocalTime.class)))
+				.thenReturn(List.of());
+		when(bookingRepo.findReservedLaterTodayRoomIds(any(LocalDate.class), any(LocalTime.class)))
+				.thenReturn(List.of());
+
+		var statuses = bookingService.getTodayRoomStatuses();
+
+		assertEquals(0, statuses.size());
+	}
+
+	@Test
+	void createBooking_rejectsInvalidRoleBeforeRoomLookup() {
+		BookingDTO dto = new BookingDTO();
+		dto.setBookingDate(LocalDate.now().plusDays(1));
+		dto.setStartTime(LocalTime.of(10, 0));
+		dto.setEndTime(LocalTime.of(11, 0));
+		dto.setRoomId(1L);
+
+		User user = new User();
+		user.setEmail("guest@company.com");
+		user.setRole("GUEST");
+
+		when(userRepo.findByEmail("guest@company.com")).thenReturn(Optional.of(user));
+
+		assertThrows(ResponseStatusException.class, () -> bookingService.createBooking(dto, "guest@company.com"));
+		verify(meetRepo, never()).findByIdForUpdate(any());
 	}
 
 }
