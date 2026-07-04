@@ -44,6 +44,7 @@ const AdminDashboard = () => {
   const [roomStatusData, setRoomStatusData] = useState([]);
 
   const [userDistributionData, setUserDistributionData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -133,7 +134,8 @@ const AdminDashboard = () => {
           });
         },
       )
-      .catch((error) => console.error("Unable to load dashboard", error));
+      .catch((error) => console.error("Unable to load dashboard", error))
+      .finally(() => setLoading(false));
   }, []);
 
   const cards = [
@@ -180,6 +182,49 @@ const AdminDashboard = () => {
       valueColor: "text-violet-600",
     },
   ];
+
+  if (loading) {
+    return (
+      <main className="portal-page">
+        <div className="portal-container">
+          <div className="portal-heading">
+            <p className="portal-kicker">
+              {user?.systemAdmin ? "System Admin Portal" : "Admin Portal"}
+            </p>
+
+            <h1 className="portal-title">
+              {user?.systemAdmin ? "System Admin Dashboard" : "Admin Dashboard"}
+            </h1>
+
+            <p className="portal-subtitle">
+              {user?.systemAdmin
+                ? "Manage admins, employees, rooms and bookings."
+                : "Manage your employees, rooms and bookings."}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((item) => (
+              <Card key={item} className="p-6 sm:p-8 animate-pulse">
+                <div className="h-5 w-32 rounded bg-slate-200" />
+                <div className="mt-3 h-4 w-44 rounded bg-slate-100" />
+                <div className="mt-6 h-12 w-20 rounded bg-slate-200" />
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            {[1, 2, 3].map((item) => (
+              <Card key={item} className="p-4 sm:p-6 shadow-lg animate-pulse">
+                <div className="mb-6 h-6 w-36 rounded bg-slate-200" />
+                <div className="mx-auto h-48 w-48 rounded-full bg-slate-100" />
+              </Card>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="portal-page">

@@ -29,6 +29,7 @@ const EmployeeDashboard = () => {
   });
   const [bookingStatusData, setBookingStatusData] = useState([]);
   const [roomStatusData, setRoomStatusData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -95,8 +96,44 @@ const EmployeeDashboard = () => {
       })
       .catch((error) =>
         console.error("Unable to load employee dashboard", error),
-      );
+      )
+      .finally(() => setLoading(false));
   }, [user.id]);
+
+  if (loading) {
+    return (
+      <main className="portal-page">
+        <div className="portal-container">
+          <div className="portal-heading">
+            <p className="portal-kicker">Employee portal</p>
+            <h1 className="portal-title">Welcome, {user.name}</h1>
+            <p className="portal-subtitle">
+              Find a meeting room and manage your own reservations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {[1, 2].map((item) => (
+              <Card key={item} className="p-6 sm:p-8 animate-pulse">
+                <div className="h-5 w-32 rounded bg-slate-200" />
+                <div className="mt-3 h-4 w-44 rounded bg-slate-100" />
+                <div className="mt-6 h-12 w-20 rounded bg-slate-200" />
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {[1, 2].map((item) => (
+              <Card key={item} className="p-4 sm:p-6 shadow-lg animate-pulse">
+                <div className="mb-6 h-6 w-36 rounded bg-slate-200" />
+                <div className="mx-auto h-48 w-48 rounded-full bg-slate-100" />
+              </Card>
+            ))}
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="portal-page">
